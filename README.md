@@ -1,6 +1,6 @@
 # Decision Jar
 
-![Decision Jar Banner](path_to_your_banner_image)
+![Decision Jar Banner](https://i.ibb.co/9r90ysb/logo.png)
 
 Decision Jar is an intuitive web application designed to simplify your decision-making process. With a user-friendly interface and an elegant design, Decision Jar helps you save time by randomly selecting options for you. Whether you're deciding what to eat, which movie to watch, or anything in between, Decision Jar is here to make your decisions easier and more fun!
 
