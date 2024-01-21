@@ -35,3 +35,5 @@ This project is crafted with care by Elderny.
 
    ```bash
    git clone https://github.com/elderny/decision-maker.git
+
+Made with ❤️ by Elderny.
