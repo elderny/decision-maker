@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wish Jar</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #FAF3DD;
+            /* Soft and warm background color */
+            color: #333;
+            line-height: 1.6;
+            font-size: 18px;
+        }
+
+        .container {
+            width: 80%;
+            max-width: 800px;
+            margin: auto;
+            text-align: center;
+            padding: 30px;
+            background: #FFFFFF;
+            /* Pure white background for the container */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            /* Rounded corners for the container */
+        }
+
+        /* Input Area Styles */
+        .wish-input-area {
+            margin-bottom: 30px;
+        }
+
+        #wish-input {
+            width: calc(100% - 20px);
+            height: 150px;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 2px solid #FFD3B4;
+            /* Soft border color */
+            border-radius: 10px;
+            /* Rounded corners for the input area */
+            resize: none;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            background: #FFF7EE;
+            /* Light background for the input */
+        }
+
+        #wish-input:focus {
+            border-color: #FFB6C1;
+            /* Soft pink focus color */
+            outline: none;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #FF69B4;
+            /* Cute pink color for buttons */
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            font-size: 16px;
+            outline: none;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #FF1493;
+            /* Darker pink on hover */
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        /* Jar Styles */
+        .jar-container {
+            position: relative;
+            background: #FAF3DD;
+            /* Background color same as body for integration */
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .jar {
+            width: 100%;
+            min-height: 400px;
+            position: relative;
+            background: linear-gradient(to bottom, #f9f9f9, #e9e9e9);
+            /* subtle gradient for a glass effect */
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            /* Required for 3D transformed children */
+        }
+
+        /* Styles for individual wishes */
+        .wish {
+            display: inline-block;
+            background-color: #ffffff;
+            background-image: linear-gradient(45deg, #f8f8f8 25%, transparent 25%, transparent 50%, #f8f8f8 50%, #f8f8f8 75%, transparent 75%, transparent);
+            background-size: 20px 20px;
+            /* Size of the paper texture */
+            border: 1px solid #e7e7e7;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin: 10px;
+            position: absolute;
+            transform-origin: center center;
+            transform: rotate3d(1, 0, 0, -90deg);
+            /* Initially rotated to simulate falling */
+            transition: transform 0.5s ease, opacity 0.5s ease;
+            font-family: 'Handwriting', cursive;
+            /* Handwriting-like font */
+            font-size: 16px;
+            color: #333;
+            line-height: 1.4;
+            max-width: 60%;
+            /* Ensures the wish doesn't take full width */
+            word-wrap: break-word;
+            cursor: grab;
+            /* Indicate it can be moved */
+            user-select: none;
+            /* Prevent user from selecting the text */
+            overflow: hidden;
+            /* Ensure the content doesn't spill out */
+        }
+
+        .wish:hover {
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+            transform: translateZ(30px);
+            /* Lift the wish a bit on hover for a 3D effect */
+        }
+
+        .wish::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.5) 50%, transparent);
+            pointer-events: none;
+            /* Ensure it doesn't interfere with clicking the wish */
+        }
+
+        /* Animation for the jar shake */
+        @keyframes shake {
+            0% {
+                transform: translate(1px, 1px) rotate(0deg);
+            }
+
+            10% {
+                transform: translate(-1px, -2px) rotate(-1deg);
+            }
+
+            20% {
+                transform: translate(-3px, 0px) rotate(1deg);
+            }
+
+            30% {
+                transform: translate(3px, 2px) rotate(0deg);
+            }
+
+            40% {
+                transform: translate(1px, -1px) rotate(1deg);
+            }
+
+            50% {
+                transform: translate(-1px, 2px) rotate(-1deg);
+            }
+
+            60% {
+                transform: translate(-3px, 1px) rotate(0deg);
+            }
+
+            70% {
+                transform: translate(3px, 1px) rotate(-1deg);
+            }
+
+            80% {
+                transform: translate(-1px, -1px) rotate(1deg);
+            }
+
+            90% {
+                transform: translate(1px, 2px) rotate(0deg);
+            }
+
+            100% {
+                transform: translate(1px, -2px) rotate(-1deg);
+            }
+        }
+
+        .jar.shake {
+            animation: shake 0.5s;
+            animation-iteration-count: 1;
+        }
+
+        /* Placeholder style */
+        ::placeholder {
+            color: #aaa;
+            opacity: 1;
+        }
+
+        :focus::placeholder {
+            transition: opacity 0.3s ease;
+            opacity: 0;
+        }
+
+        .modal {
+            display: none;
+            /* Hidden by default */
+            position: fixed;
+            /* Stay in place */
+            z-index: 1;
+            /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%;
+            /* Full width */
+            height: 100%;
+            /* Full height */
+            overflow: auto;
+            /* Enable scroll if needed */
+            background-color: rgb(0, 0, 0);
+            /* Fallback color */
+            background-color: rgba(0, 0, 0, 0.4);
+            /* Black w/ opacity */
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            /* Could be more or less, depending on screen size */
+        }
+
+        .close-btn {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close-btn:hover,
+        .close-btn:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                width: 90%;
+                padding: 20px;
+            }
+
+            #wish-input {
+                height: 120px;
+            }
+
+            .wish {
+                font-size: 14px;
+                padding: 15px;
+                max-width: 80%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="greeting-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h2>Welcome to Decision Maker!</h2>
+            <p>This website makes your decisions easier by randomly choosing options for you, saving you time. Simply
+                enter your choices and let Decision Jar do the rest!</p>
+        </div>
+    </div>
+    <div class="container">
+        <div class="wish-input-area">
+            <textarea id="wish-input" placeholder="Write your Decision here..."></textarea>
+            <button id="submit-wish">Submit Decision</button>
+        </div>
+        <div class="jar-container">
+            <div class="jar">
+                <!-- Wishes will be appended here -->
+            </div>
+        </div>
+        <button id="choose-wish">Choose a Decision</button>
+    </div>
+    <audio id="background-music" loop>
+        <source src="music.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const modal = document.getElementById('greeting-modal');
+            modal.style.display = 'block';
+
+            const submitButton = document.getElementById('submit-wish');
+            const chooseButton = document.getElementById('choose-wish');
+            const wishInput = document.getElementById('wish-input');
+            const jar = document.querySelector('.jar');
+
+            // Function to create a paper-like wish element
+            function createWishElement(text) {
+                const wishElement = document.createElement('div');
+                wishElement.classList.add('wish');
+                wishElement.innerText = text;
+                // Styling to make it look like a piece of paper
+                wishElement.style.background = 'white';
+                wishElement.style.border = '1px solid #ccc';
+                wishElement.style.borderRadius = '5px';
+                wishElement.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
+                wishElement.style.padding = '10px';
+                wishElement.style.margin = '5px';
+                wishElement.style.position = 'absolute';
+                wishElement.style.top = '-50px'; // Start above the jar
+                wishElement.style.left = `${Math.random() * 80 + 10}%`; // Random horizontal position
+                wishElement.style.transform = `rotate(${Math.random() * 20 - 10}deg)`; // Slight random rotation
+                return wishElement;
+            }
+
+            function bounceWish(wishElement, depth) {
+                wishElement.animate([
+                    { transform: `translateY(${depth}px)` },
+                    { transform: `translateY(${depth - 10}px)` }, // Slightly above the final position for bounce
+                    { transform: `translateY(${depth}px)` } // Back to final position
+                ], {
+                    duration: 200,
+                    fill: 'forwards',
+                    easing: 'ease-out'
+                });
+            }
+
+            // Function to drop a wish into the jar
+            function dropWish(wishElement) {
+                jar.appendChild(wishElement);
+                let depth = jar.clientHeight - 50 - jar.children.length * 10; // Calculate depth based on jar height and number of wishes
+                wishElement.animate([
+                    { transform: `translateY(-50px)` },
+                    { transform: `translateY(${depth}px)` }
+                ], {
+                    duration: 1000 + depth, // Longer duration for wishes further down
+                    fill: 'forwards', // Persist the final keyframe styles
+                    easing: 'ease-in'
+                }).onfinish = function () {
+                    bounceWish(wishElement, depth); // Bounce when the animation finishes
+                };
+            }
+
+            function extractYPosition(wishElement) {
+                const style = window.getComputedStyle(wishElement);
+                const matrix = style.transform || style.webkitTransform || style.mozTransform;
+                if (matrix === 'none' || typeof matrix === 'undefined') {
+                    return 0; // Default to 0 if no transform matrix is found
+                }
+                const values = matrix.match(/matrix.*\((.+)\)/)[1].split(', ');
+                const translateY = values[5]; // 6th value in matrix for translateY
+                return parseFloat(translateY);
+            }
+
+            // Function to animate a wish falling back to the bottom
+            function fallWish(wishElement, startY, endY) {
+                wishElement.animate([
+                    { transform: `translateY(${startY}px)` },
+                    { transform: `translateY(${endY}px)` }
+                ], {
+                    duration: 800 + Math.abs(startY - endY) * 2, // Duration based on distance
+                    fill: 'forwards',
+                    easing: 'ease-in'
+                }).onfinish = function () {
+                    bounceWish(wishElement, endY); // Bounce when the animation finishes
+                };
+            }
+
+            // Function to reset wishes to the bottom of the jar after shaking
+            function resetWishes() {
+                Array.from(jar.children).forEach((wish, index) => {
+                    const currentY = extractYPosition(wish); // Extract the current Y position more accurately
+                    let depth = jar.clientHeight - 50 - index * 10; // Calculate depth based on jar height and number of wishes
+                    if (currentY < depth) { // Only animate if the wish is above its final depth
+                        fallWish(wish, currentY, depth); // Animate wish falling to the calculated depth
+                    }
+                });
+            }
+            // Submit Wish Event
+            submitButton.addEventListener('click', function () {
+                const wishText = wishInput.value.trim();
+                if (wishText) {
+                    const wishElement = createWishElement(wishText);
+                    dropWish(wishElement);
+                    wishInput.value = ''; // Clear the input field
+                    const music = document.getElementById('background-music');
+                    if (music.paused) {
+                        music.play();
+                    }
+                }
+            });
+
+            // Shake and choose a random wish
+            chooseButton.addEventListener('click', function () {
+                if (jar.children.length > 0) {
+                    // Shake the jar
+                    jar.classList.add('shake');
+                    setTimeout(() => jar.classList.remove('shake'), 500);
+
+                    // Shuffle the wishes within the jar
+                    Array.from(jar.children).forEach(wish => {
+                        const randomDepth = Math.random() * (jar.clientHeight - 50);
+                        const randomRotation = Math.random() * 20 - 10;
+                        wish.animate([
+                            { transform: `translateY(${randomDepth}px) rotate(${randomRotation}deg)` }
+                        ], {
+                            duration: 800, // Adjust for a more natural shuffle
+                            fill: 'forwards',
+                            easing: 'ease-out'
+                        });
+                    });
+
+                    // After shaking, reset wishes to the bottom of the jar
+                    setTimeout(() => {
+                        resetWishes();
+
+                        // After resetting, choose a random wish
+                        setTimeout(() => {
+                            const wishes = Array.from(jar.children);
+                            const randomIndex = Math.floor(Math.random() * wishes.length);
+                            const chosenWish = wishes[randomIndex];
+
+                            // Animation for the chosen wish to fly out
+                            chosenWish.animate([
+                                { transform: `translateY(-1000px) rotate(720deg)`, opacity: 0 }
+                            ], {
+                                duration: 1000,
+                                fill: 'forwards',
+                                easing: 'ease-in'
+                            }).onfinish = function () {
+                                alert(`Wish chosen: ${chosenWish.innerText}`);
+                                jar.removeChild(chosenWish);
+                            };
+
+                        }, 2000); // Wait for the reset animation to complete
+                    }, 1000);
+                }
+            });
+        });
+        function closeModal() {
+            const modal = document.getElementById('greeting-modal');
+            modal.style.display = 'none';
+        }
+    </script>
+</body>
+
+</html>
