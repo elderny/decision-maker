@@ -34,4 +34,4 @@ This project is crafted with care by Elderny.
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/yourusername/decision-jar.git
+   git clone https://github.com/elderny/decision-maker.git
